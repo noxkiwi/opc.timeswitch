@@ -1,0 +1,26 @@
+DROP TABLE `timeswitch`;
+
+CREATE TABLE `timeswitch` (
+	`timeswitch_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`timeswitch_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`timeswitch_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`timeswitch_flags` TINYINT(4) NOT NULL DEFAULT '0',
+	`timeswitch_value_on` VARCHAR(64) NOT NULL COMMENT 'Value to be written for "ON" status' COLLATE 'utf8_general_ci',
+	`timeswitch_value_off` VARCHAR(64) NOT NULL COMMENT 'Value to be written for "OFF" status' COLLATE 'utf8_general_ci',
+	`timeswitch_week` DATE NOT NULL DEFAULT '1970-01-01' COMMENT 'The date of the monday, where the week applies to.',
+	`timeswitch_monday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Monday' COLLATE 'utf8_general_ci',
+	`timeswitch_tuesday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Tuesday' COLLATE 'utf8_general_ci',
+	`timeswitch_wednesday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Wednesday' COLLATE 'utf8_general_ci',
+	`timeswitch_thursday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Thursday' COLLATE 'utf8_general_ci',
+	`timeswitch_friday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Friday' COLLATE 'utf8_general_ci',
+	`timeswitch_saturday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Saturday' COLLATE 'utf8_general_ci',
+	`timeswitch_sunday` VARCHAR(96) NOT NULL DEFAULT '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' COMMENT '15 min interval switches for Sunday' COLLATE 'utf8_general_ci',
+	`opc_item_auto` INT(10) UNSIGNED NOT NULL COMMENT 'OPC Item that enables automation',
+	`opc_item_write` INT(10) UNSIGNED NOT NULL COMMENT 'OPC Item that will be written into.',
+	PRIMARY KEY (`timeswitch_id`) USING BTREE,
+	UNIQUE INDEX `opc_item_write_unique` (`opc_item_write`) USING BTREE,
+	INDEX `opc_item_auto` (`opc_item_auto`) USING BTREE,
+	INDEX `opc_item_write` (`opc_item_write`) USING BTREE,
+	CONSTRAINT `timeswitch_to_opc_item_auto` FOREIGN KEY (`opc_item_auto`) REFERENCES `opc_item` (`opc_item_id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	CONSTRAINT `timeswitch_to_opc_item_write` FOREIGN KEY (`opc_item_write`) REFERENCES `opc_item` (`opc_item_id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+) COLLATE='utf8_general_ci' ENGINE=INNODB;
